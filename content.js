@@ -41,7 +41,7 @@
           border: none;
           border-radius: 50%;
           background: transparent;
-          color: rgba(51, 85, 255, 0.98);
+          color: rgb(0, 149, 255);
           cursor: pointer;
           transition: all 0.25s ease;
           font-size: 15px;
@@ -49,7 +49,7 @@
           vertical-align: middle;
         }
         .moekoe-dl-btn:hover {
-          color: #ff9d00;
+          color: #ff9100;
           background: rgba(255,107,139,0.12);
           transform: scale(1.15);
         }
@@ -155,7 +155,6 @@
 
       if (!target) return;
 
-      // 确保按钮不存在
       if (document.querySelector('.moekoe-dl-btn')) {
         this.injected = true;
         return;
@@ -183,30 +182,25 @@
     }
 
     // ========== SVG 图标 ==========
-async iconDownload() {
-  try {
-    const response = await fetch(chrome.runtime.getURL('icon.svg'));
-    return await response.text();
-  } catch {
-    // 加载失败时的备用图标
-    return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-      <polyline points="7 10 12 15 17 10"/>
-      <line x1="12" y1="15" x2="12" y2="3"/>
-    </svg>`;
-  }
-}
+    iconDownload() {
+      return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>`;
+    }
+
     iconSpinner() {
       return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
         <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
       </svg>`;
     }
 
-   
+    // ========== 获取歌曲信息 ==========
     getSongInfo() {
       const info = { title: '', artist: '', url: '', hash: '' };
 
-
+      // 1) 从 DOM 提取歌名和歌手
       const titleSelectors = [
         '.player-bar .song-title',
         '.player-bar .title',
@@ -238,8 +232,10 @@ async iconDownload() {
         }
       }
 
+      // 2) 获取音频 URL（多种方式）
       info.url = this.getAudioUrl();
 
+      // 3) 尝试从 localStorage/sessionStorage 补充信息
       if (!info.title || !info.url) {
         try {
           const keys = ['current_song', 'currentSong', 'playingSong', 'nowPlaying'];
@@ -260,6 +256,7 @@ async iconDownload() {
         } catch (e) { /* ignore */ }
       }
 
+      // 4) 从 audio 元素获取 URL
       if (!info.url) {
         const audio = document.querySelector('audio');
         if (audio && audio.src) info.url = audio.src;
@@ -372,6 +369,7 @@ async iconDownload() {
       setTimeout(() => document.body.removeChild(a), 200);
     }
 
+    // ========== 工具方法 ==========
     buildFileName(info) {
       const ext = this.guessExtension(info.url);
       const safeTitle = this.sanitize(info.title || '未知歌曲');
@@ -405,13 +403,14 @@ async iconDownload() {
         btn.title = '下载中...';
       } else {
         btn.classList.remove('is-downloading');
-btn.innerHTML = await this.iconDownload();
+        btn.innerHTML = this.iconDownload();
         btn.title = '下载当前歌曲';
       }
     }
 
+    // ========== Toast 通知 ==========
     toast(msg, type = 'info') {
-
+      // 清除已有 toast
       document.querySelectorAll('.moekoe-toast').forEach(el => el.remove());
 
       const icons = { success: '✓', error: '✗', info: 'ℹ' };
@@ -436,10 +435,10 @@ btn.innerHTML = await this.iconDownload();
       menu.className = 'moekoe-ctx-menu';
 
       const items = [
-        { label: '下载当前歌曲', action: () => this.handleDownload() },
+        { label: '⬇ 下载当前歌曲', action: () => this.handleDownload() },
         { sep: true },
         {
-          label: '复制歌曲信息：作者-歌曲名',
+          label: '📋 复制歌曲信息',
           action: () => {
             const text = info.artist ? `${info.artist} - ${info.title}` : info.title;
             navigator.clipboard.writeText(text || '未知').then(
@@ -449,7 +448,7 @@ btn.innerHTML = await this.iconDownload();
           }
         },
         {
-          label: '复制音频链接',
+          label: '🔗 复制音频链接',
           action: () => {
             if (info.url) {
               navigator.clipboard.writeText(info.url).then(
@@ -463,7 +462,7 @@ btn.innerHTML = await this.iconDownload();
         },
         { sep: true },
         {
-          label: '下载历史',
+          label: '📜 下载历史',
           action: () => this.showHistory()
         },
       ];
