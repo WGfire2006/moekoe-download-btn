@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "为MoeKoe增加播放栏下载按钮",
+  "version": "1.0.1",
+  "author": {
+  "name": "Qwen3.7 max  awa",
+   "url": "https://wgfire.top"
+  },
+  "description": "在 MoeKoe Music 播放栏增加一个下载按钮，一键下载当前播放的歌曲",
+  "permissions": ["scripting"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "MoeKoe 下载按钮",
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "128": "icon.png"
+  }
+}
