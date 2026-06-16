@@ -14,5 +14,4 @@
 1. 打开 MoeKoe Music
 2. 进入「插件管理」页面
 3. 点击「安装本地插件」
-4. 选择 `moekoe-download-btn.zip` 文件（zip内结构应为文件夹包含多个文件形式）
-
+4. 选择 `moekoe-download-btn.zip` 文件（在github直接code-download zip即可）
