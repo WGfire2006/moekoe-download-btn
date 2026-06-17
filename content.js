@@ -435,10 +435,10 @@
       menu.className = 'moekoe-ctx-menu';
 
       const items = [
-        { label: '⬇ 下载当前歌曲', action: () => this.handleDownload() },
+        { label: '下载当前歌曲', action: () => this.handleDownload() },
         { sep: true },
         {
-          label: '📋 复制歌曲信息',
+          label: '复制歌曲信息',
           action: () => {
             const text = info.artist ? `${info.artist} - ${info.title}` : info.title;
             navigator.clipboard.writeText(text || '未知').then(
@@ -448,7 +448,7 @@
           }
         },
         {
-          label: '🔗 复制音频链接',
+          label: '复制音频链接',
           action: () => {
             if (info.url) {
               navigator.clipboard.writeText(info.url).then(
@@ -462,7 +462,7 @@
         },
         { sep: true },
         {
-          label: '📜 下载历史',
+          label: '下载历史',
           action: () => this.showHistory()
         },
       ];
@@ -553,7 +553,7 @@
         `;
 
         let html = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-          <h3 style="margin:0;color:#ff6b8b;font-size:16px">📜 下载历史 (${history.length})</h3>
+          <h3 style="margin:0;color:#ff6b8b;font-size:16px">下载历史 (${history.length})</h3>
           <button id="moekoe-close-hist" style="background:rgba(255,255,255,0.1);border:none;color:#fff;font-size:18px;cursor:pointer;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center">×</button>
         </div>`;
 
